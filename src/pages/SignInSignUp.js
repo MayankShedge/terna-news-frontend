@@ -3,34 +3,33 @@ import { FaFacebook, FaTwitter, FaLinkedin, FaGoogle } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// Define the live backend URL
+const API_URL = 'https://terna-news-backend.onrender.com';
+
 const SignInSignUp = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  // userType is not sent to the backend anymore, but we can keep the state if you plan to use it for UI changes.
-  const [userType, setUserType] = useState('user'); 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [adminCode, setAdminCode] = useState(''); 
+  const [adminCode, setAdminCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Clear previous errors
-    setSuccessMessage(''); // Clear previous success messages
+    setErrorMessage('');
+    setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', {
+      const response = await axios.post(`${API_URL}/api/users/login`, {
         email,
         password,
       });
-
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = '/';
     } catch (error) {
-      // --- CHANGE 1: More specific error message for unverified users ---
       if (error.response && error.response.status === 401) {
         setErrorMessage('Please verify your email before logging in.');
       } else {
@@ -42,26 +41,20 @@ const SignInSignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); // Clear previous errors
-    setSuccessMessage(''); // Clear previous success messages
+    setErrorMessage('');
+    setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', {
+      await axios.post(`${API_URL}/api/users/register`, {
         name,
         email,
         password,
         adminCode,
       });
-
-      // --- CHANGE 2: Update success message and clear the form ---
-      // We no longer auto-login or redirect from here.
       setSuccessMessage('Registration successful! Please check your email to verify your account.');
-      
-      // Clear form fields after successful registration
       setName('');
       setEmail('');
       setPassword('');
       setAdminCode('');
-
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Registration failed. Please try again.');
       console.error(error.response?.data || error.message);
@@ -105,8 +98,6 @@ const SignInSignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             
-            {/* Dropdown removed from Sign In form as it's not needed for login */}
-
             {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
             {successMessage && !isSignUp && <p className="text-green-500 mb-4">{successMessage}</p>}
 
@@ -159,7 +150,6 @@ const SignInSignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            
             <input
               type="text"
               placeholder="Admin Code (Optional)"
@@ -167,8 +157,7 @@ const SignInSignUp = () => {
               value={adminCode}
               onChange={(e) => setAdminCode(e.target.value)}
             />
-
-            {/* --- CHANGE 3: Show success message on the sign-up form --- */}
+            
             {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
             {successMessage && isSignUp && <p className="text-green-500 mb-4">{successMessage}</p>}
 
@@ -186,7 +175,7 @@ const SignInSignUp = () => {
           <button
             onClick={() => {
               setIsSignUp(false);
-              setErrorMessage(''); // Clear messages on toggle
+              setErrorMessage('');
               setSuccessMessage('');
             }}
             className={`flex-1 text-center py-1 ${!isSignUp ? 'font-bold' : ''} bg-orange-300 text-black`}
@@ -196,7 +185,7 @@ const SignInSignUp = () => {
           <button
             onClick={() => {
               setIsSignUp(true);
-              setErrorMessage(''); // Clear messages on toggle
+              setErrorMessage('');
               setSuccessMessage('');
             }}
             className={`flex-1 text-center py-1 ${isSignUp ? 'font-bold' : ''} bg-orange-300 text-black`}

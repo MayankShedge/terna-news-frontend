@@ -3,6 +3,9 @@ import axios from 'axios';
 import Article from '../components/Article';
 import AddNewsForm from '../components/AddNewsForm';
 
+// Define the live backend URL
+const API_URL = 'https://terna-news-backend.onrender.com';
+
 const NewsCategoryPage = ({ category, pageTitle }) => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,11 +13,10 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Function to fetch news
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/news?category=${category}`);
+      const response = await axios.get(`${API_URL}/api/news?category=${category}`);
       setNews(response.data);
     } catch (err) {
       setError('Failed to fetch news. Please try again later.');
@@ -25,7 +27,6 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
   };
 
   useEffect(() => {
-    // Check if the user is an admin from localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const user = JSON.parse(storedUser);
@@ -33,13 +34,10 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
         setIsAdmin(true);
       }
     }
-    // Fetch news on component mount
     fetchNews();
   }, [category]);
 
-  // Function to handle when new news is added via the form
   const handleNewsAdded = (newArticle) => {
-    // Add the new article to the top of the list and close the form
     setNews([newArticle, ...news]);
     setShowAddForm(false);
   };
@@ -62,17 +60,15 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
           )}
         </div>
 
-        {/* Conditionally render the AddNewsForm */}
         {isAdmin && showAddForm && (
           <AddNewsForm category={category} onNewsAdded={handleNewsAdded} />
         )}
 
-        {/* Display news articles */}
         {news.length > 0 ? (
           news.map((item) => (
             <Article
               key={item._id}
-              newsItem={item} // This is the only line that changed
+              newsItem={item}
             />
           ))
         ) : (

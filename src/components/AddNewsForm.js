@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// Define the live backend URL
+const API_URL = 'https://terna-news-backend.onrender.com';
+
 const AddNewsForm = ({ category, onNewsAdded }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -24,7 +27,7 @@ const AddNewsForm = ({ category, onNewsAdded }) => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/news',
+        `${API_URL}/api/news`,
         { title, description, source, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -33,7 +36,6 @@ const AddNewsForm = ({ category, onNewsAdded }) => {
       setTitle('');
       setDescription('');
       setSource('');
-      // Notify the parent component that new news has been added
       onNewsAdded(response.data); 
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add news. You may not have admin privileges.');

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Article from '../components/Article';
 
+// Define the live backend URL
+const API_URL = 'https://terna-news-backend.onrender.com';
+
 const RecommendedPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +20,7 @@ const RecommendedPage = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/api/news/recommendations', {
+        const response = await axios.get(`${API_URL}/api/news/recommendations`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
