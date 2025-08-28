@@ -1,21 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react'; // 1. Import useRef
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+
+// Define the live backend URL
+const API_URL = 'https://terna-news-backend.onrender.com';
 
 const VerifyEmail = () => {
   const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('Verifying your email, please wait...');
   const { token } = useParams();
-  
-  // 2. Create a ref to track if verification has been attempted
   const verificationAttempted = useRef(false);
 
   useEffect(() => {
-    // 3. Prevent the effect from running more than once
     if (verificationAttempted.current) {
       return;
     }
-    verificationAttempted.current = true; // Mark as attempted
+    verificationAttempted.current = true;
 
     if (!token) {
       setStatus('error');
@@ -25,7 +25,9 @@ const VerifyEmail = () => {
 
     const verifyUserEmail = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/verify/${token}`);
+        // --- THIS IS THE FIX ---
+        // Use the live backend URL
+        const response = await axios.get(`${API_URL}/api/users/verify/${token}`);
         setStatus('success');
         setMessage(response.data.message);
       } catch (error) {
@@ -35,7 +37,7 @@ const VerifyEmail = () => {
     };
 
     verifyUserEmail();
-  }, [token]); // The effect still depends on the token
+  }, [token]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
