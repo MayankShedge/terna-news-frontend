@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import Article from '../components/Article';
 import AddNewsForm from '../components/AddNewsForm';
@@ -12,7 +12,7 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/news?category=${category}`);
@@ -23,9 +23,8 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -34,8 +33,9 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
         setIsAdmin(true);
       }
     }
+
     fetchNews();
-  }, [category]);
+  }, [fetchNews]);
 
   const handleNewsAdded = (newArticle) => {
     setNews([newArticle, ...news]);
