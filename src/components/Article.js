@@ -8,7 +8,7 @@ const API_URL = 'https://terna-news-backend.onrender.com';
 const Article = ({ newsItem }) => {
   const { _id, title, description, source, publishedAt, averageRating, numReviews } = newsItem;
   const [ratingMessage, setRatingMessage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [isLoggedIn] = useState(!!localStorage.getItem('token'));
 
   const formattedDate = new Date(publishedAt).toLocaleDateString('en-US', {
     year: 'numeric',

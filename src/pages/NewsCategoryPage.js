@@ -25,6 +25,7 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
