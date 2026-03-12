@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaFacebook, FaTwitter, FaLinkedin, FaGoogle } from 'react-icons/fa';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -13,7 +13,6 @@ const SignInSignUp = () => {
   const [adminCode, setAdminCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
