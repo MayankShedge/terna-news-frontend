@@ -12,8 +12,9 @@ import Footer from './components/Footer';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import SignInSignUp from './pages/SignInSignUp';
 import VerifyEmail from './pages/VerifyEmail';
-// --- 1. Import the new page ---
-import RecommendedPage from './pages/RecommendedPage'; 
+import RecommendedPage from './pages/RecommendedPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const App = () => {
   return (
@@ -29,10 +30,9 @@ const App = () => {
         <Route path="/login" element={<SignInSignUp />} />
         <Route path="/register" element={<SignInSignUp />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
-
-        {/* --- 2. Add the new route --- */}
         <Route path="/recommended-for-you" element={<RecommendedPage />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

@@ -3,8 +3,7 @@ import axios from 'axios';
 import Article from '../components/Article';
 import AddNewsForm from '../components/AddNewsForm';
 
-// Define the live backend URL
-const API_URL = 'https://terna-news-backend.onrender.com';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const NewsCategoryPage = ({ category, pageTitle }) => {
   const [news, setNews] = useState([]);
@@ -66,10 +65,7 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
 
         {news.length > 0 ? (
           news.map((item) => (
-            <Article
-              key={item._id}
-              newsItem={item}
-            />
+            <Article key={item._id} newsItem={item} />
           ))
         ) : (
           <div className="text-center p-10 bg-white rounded-lg shadow-md">

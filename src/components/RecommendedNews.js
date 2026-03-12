@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Article from './Article'; // We'll reuse your Article component
+import Article from './Article';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const RecommendedNews = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -9,19 +11,15 @@ const RecommendedNews = () => {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      // Get the token from localStorage to make an authenticated request
       const token = localStorage.getItem('token');
       if (!token) {
         setLoading(false);
-        // Don't show an error, just don't fetch if not logged in.
         return;
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/api/news/recommendations', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axios.get(`${API_URL}/api/news/recommendations`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setRecommendations(response.data);
       } catch (err) {
@@ -33,9 +31,8 @@ const RecommendedNews = () => {
     };
 
     fetchRecommendations();
-  }, []); // Empty array ensures this runs only once
+  }, []);
 
-  // Don't render anything if loading, error, or no recommendations
   if (loading || error || recommendations.length === 0) {
     return null;
   }

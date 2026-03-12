@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { FaFacebook, FaTwitter, FaLinkedin, FaGoogle } from 'react-icons/fa';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-// Define the live backend URL
-const API_URL = 'https://terna-news-backend.onrender.com';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const SignInSignUp = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -65,7 +64,6 @@ const SignInSignUp = () => {
     <div className="flex items-center justify-center h-screen bg-gradient-to-r from-blue-300 to-green-300">
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-lg overflow-hidden">
         
-        {/* Sign In Form */}
         <div className={`p-8 ${isSignUp ? 'hidden' : ''}`}>
           <form className="flex flex-col items-center justify-center" onSubmit={handleSignIn}>
             <h1 className="text-2xl font-bold mb-4">Sign In</h1>
@@ -93,11 +91,17 @@ const SignInSignUp = () => {
               type="password"
               placeholder="Password"
               required
-              className="border border-gray-300 rounded-lg p-2 w-full mb-4"
+              className="border border-gray-300 rounded-lg p-2 w-full mb-2"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             
+            <div className="w-full text-right mb-4">
+              <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                Forgot Password?
+              </Link>
+            </div>
+
             {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
             {successMessage && !isSignUp && <p className="text-green-500 mb-4">{successMessage}</p>}
 
@@ -110,7 +114,6 @@ const SignInSignUp = () => {
           </form>
         </div>
 
-        {/* Sign Up Form */}
         <div className={`p-8 ${!isSignUp ? 'hidden' : ''}`}>
           <form className="flex flex-col items-center justify-center" onSubmit={handleSignUp}>
             <h1 className="text-2xl font-bold mb-4">Create Account</h1>
@@ -170,7 +173,6 @@ const SignInSignUp = () => {
           </form>
         </div>
 
-        {/* Toggle Buttons */}
         <div className="flex justify-between absolute bottom-0 left-0 right-0">
           <button
             onClick={() => {
