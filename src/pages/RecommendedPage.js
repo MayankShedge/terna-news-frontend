@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Article from '../components/Article';
 
-// Define the live backend URL
-const API_URL = 'https://terna-news-backend.onrender.com';
+const API_URL = process.env.REACT_APP_API_URL || 'https://terna-news-backend.onrender.com';
 
 const RecommendedPage = () => {
   const [recommendations, setRecommendations] = useState([]);
@@ -21,9 +20,7 @@ const RecommendedPage = () => {
 
       try {
         const response = await axios.get(`${API_URL}/api/news/recommendations`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setRecommendations(response.data);
       } catch (err) {
@@ -45,7 +42,9 @@ const RecommendedPage = () => {
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">✨ Recommended For You</h1>
-          <p className="text-gray-600 mt-2">These articles are recommended for you based on your ratings.</p>
+          <p className="text-gray-600 mt-2">
+            These articles are recommended based on your ratings.
+          </p>
         </div>
 
         {recommendations.length > 0 ? (
@@ -54,7 +53,9 @@ const RecommendedPage = () => {
           ))
         ) : (
           <div className="text-center p-10 bg-white rounded-lg shadow-md">
-            <p className="text-gray-600">No recommendations available yet. Start rating articles to get personalized suggestions!</p>
+            <p className="text-gray-600">
+              No recommendations yet. Start rating articles to get personalized suggestions!
+            </p>
           </div>
         )}
       </div>
