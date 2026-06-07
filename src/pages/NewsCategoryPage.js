@@ -75,6 +75,30 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
     }
   };
 
+  const handleDeleteNews = (deletedId) => {
+    setNews((prev) =>
+      prev.filter((item) => item._id !== deletedId)
+    );
+
+    setPagination((prev) => {
+      if (!prev) return prev;
+
+      const updatedTotal = Math.max(0, prev.total - 1);
+      const updatedTotalPages = Math.max(
+        1,
+        Math.ceil(updatedTotal / prev.limit)
+      );
+
+      return {
+        ...prev,
+        total: updatedTotal,
+        totalPages: updatedTotalPages,
+        hasNextPage: prev.page < updatedTotalPages,
+        hasPrevPage: prev.page > 1,
+      };
+    });
+  };
+
   const handlePrevPage = () => {
     if (pagination?.hasPrevPage) {
       setCurrentPage((prev) => Math.max(1, prev - 1));
@@ -112,7 +136,7 @@ const NewsCategoryPage = ({ category, pageTitle }) => {
         {news.length > 0 ? (
           <>
             {news.map((item) => (
-              <Article key={item._id} newsItem={item} />
+              <Article key={item._id} newsItem={item} onDelete={handleDeleteNews}/>
             ))}
 
             {pagination && pagination.totalPages > 1 && (

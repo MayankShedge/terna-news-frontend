@@ -7,7 +7,7 @@ import { BookmarkIcon as BookmarkSolid } from '@heroicons/react/solid';
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://terna-news-backend.onrender.com';
 
-const Article = ({ newsItem, onUnbookmark }) => {
+const Article = ({ newsItem, onUnbookmark, onDelete }) => {
   const { _id, title, description, source, publishedAt, averageRating, numReviews, views } = newsItem;
   const [ratingMessage, setRatingMessage] = useState('');
   const [isLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -28,6 +28,16 @@ const Article = ({ newsItem, onUnbookmark }) => {
       setIsBookmarked(bookmarks.includes(_id));
     }
   }, [_id, isLoggedIn]);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setIsAdmin(user?.isAdmin || false);
+    }
+  }, []);
 
   const handleRatingSubmit = async (rating) => {
     const token = localStorage.getItem('token');
@@ -81,34 +91,73 @@ const Article = ({ newsItem, onUnbookmark }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this article?'
+    );
+
+    if (!confirmed) return;
+
+    const token = localStorage.getItem('token');
+
+    try {
+      await axios.delete(
+        `${API_URL}/api/news/${_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (onDelete) {
+        onDelete(_id);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete article.');
+    }
+  };
+
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden mb-6 border border-gray-200 transition-shadow duration-300 hover:shadow-xl">
       <div className="p-6">
         <div className="flex items-start justify-between gap-4 mb-2">
-          <h2 className="text-2xl font-bold text-gray-800">
-            <Link
-              to={`/news/${_id}`}
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              {title}
-            </Link>
-          </h2>
+  <h2 className="text-2xl font-bold text-gray-800">
+    <Link
+      to={`/news/${_id}`}
+      className="hover:text-blue-600 transition-colors duration-200"
+    >
+      {title}
+    </Link>
+  </h2>
 
-          {isLoggedIn && (
-            <button
-              onClick={handleBookmark}
-              disabled={bookmarkLoading}
-              title={isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}
-              className="flex-shrink-0 mt-1 p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50"
-            >
-              {isBookmarked ? (
-                <BookmarkSolid className="h-6 w-6 text-blue-500" />
-              ) : (
-                <BookmarkOutline className="h-6 w-6 text-gray-400 hover:text-blue-500 transition-colors duration-200" />
-              )}
-            </button>
-          )}
-        </div>
+  <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+      {isAdmin && (
+          <button
+            onClick={handleDelete}
+            className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            Delete
+          </button>
+        )}
+
+        {isLoggedIn && (
+          <button
+            onClick={handleBookmark}
+            disabled={bookmarkLoading}
+            title={isBookmarked ? 'Remove bookmark' : 'Bookmark this article'}
+            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50"
+          >
+            {isBookmarked ? (
+              <BookmarkSolid className="h-6 w-6 text-blue-500" />
+            ) : (
+              <BookmarkOutline className="h-6 w-6 text-gray-400 hover:text-blue-500 transition-colors duration-200" />
+            )}
+          </button>
+        )}
+    </div>
+  </div>
 
         <div className="flex flex-wrap items-center gap-x-3 text-sm text-gray-500 mb-4">
           <span>Source: <strong>{source}</strong></span>
