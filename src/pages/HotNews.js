@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Article from '../components/Article';
 
-// Define the live backend URL
-const API_URL = 'https://terna-news-backend.onrender.com';
+const API_URL = process.env.REACT_APP_API_URL || 'https://terna-news-backend.onrender.com';
 
 const HotNews = () => {
   const [hotNews, setHotNews] = useState([]);
@@ -13,12 +12,10 @@ const HotNews = () => {
   useEffect(() => {
     const fetchHotNews = async () => {
       try {
-        // --- THIS IS THE FIX ---
-        // Fetch all news articles from the live backend
-        const response = await axios.get(`${API_URL}/api/news`);
+        const response = await axios.get(`${API_URL}/api/news?page=1&limit=50`);
         
         // Filter the news to find articles with an average rating > 4
-        const filteredNews = response.data.filter(
+        const filteredNews = response.data.news.filter(
           (item) => item.averageRating > 4
         );
 

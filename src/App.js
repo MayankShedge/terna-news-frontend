@@ -13,9 +13,10 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import SignInSignUp from './pages/SignInSignUp';
 import VerifyEmail from './pages/VerifyEmail';
 import RecommendedPage from './pages/RecommendedPage';
-import BookmarksPage from './pages/Bookmarkspage'; 
+import BookmarksPage from './pages/Bookmarkspage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import ArticlePage from './pages/ArticlePage';
 
 const App = () => {
   return (
@@ -32,7 +33,8 @@ const App = () => {
         <Route path="/register" element={<SignInSignUp />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/recommended-for-you" element={<RecommendedPage />} />
-        <Route path="/bookmarks" element={<BookmarksPage />} /> 
+        <Route path="/bookmarks" element={<BookmarksPage />} />
+        <Route path="/news/:id" element={<ArticlePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
